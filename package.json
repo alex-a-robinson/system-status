@@ -1,0 +1,8 @@
+{
+  "name": "system-status-monitor",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "^4.10.1",
+    "socket.io": "^1.2.0"
+  }
+}

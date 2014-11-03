@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>System status monitor</title>
+    <link ref='stylesheet' type='text/css' href='style.css' />
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+        var socket = new io()
+
+        socket.on('status-update', function(data) {
+            var host = data[0]
+            var value = data[1]
+            addHostStatus(host, value)
+        })
+
+        $('#update').click(function() {
+            console.log('sent update emit')
+            socket.emit('update', 'all')
+        })
+
+        function addHostStatus(name, value) {
+            console.log('adding ' + name + ':' + value + ' to table')
+            if ($('#' + name + '-value').length > 0) {
+                console.log('already an element')
+                $('#' + name + '-value').html(value)
+                return
+            }
+            $('#status-table').append('<tr><td>' + name +'</td><td id="' + name + '-value">' + value + '</td></tr>')
+        }
+        })
+    </script>
+  <body>
+    <table id='status-table'>
+    </table>
+    <button id='update'>update status</button>
+
+  </body>
+</html>
