@@ -7,19 +7,26 @@ var servers = {
     'andromeda' : 'andromeda.begly.co.uk',
     'ganymede'  : 'ganymede.begly.co.uk',
     'europa'    : 'europa.begly.co.uk',
-    'callisto'  : 'callisto.begly.co.uk'
 }
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+app.get('/', function(req, res) {
+    if (req.subdomains[1] == 'status') {
+        res.sendFile(__dirname + '/index.html')
+    } else {
+        res.status = 404;
+        res.end()
+    }
 });
 
+app.get('/style.css', function(req, res) {
+    res.writeHead(200, {'Content-Type': 'text/css'})
+    res.sendFile(__dirname + '/style.css')
+})
+
 io.on('connection', function(socket){
-  console.log('New user!')
-  socket.on('update', function(msg){
-    console.log('Recived update message')
-    updateStatus(io)
-  });
+    socket.on('update', function(msg){
+        updateStatus(io)
+    });
 });
 
 function updateStatus(io) {
@@ -28,14 +35,13 @@ function updateStatus(io) {
         var host = servers[name]
         var cmd = process.exec('ping -c 1 -W 3 ' + host)
 
-        cmd.on('exit', (function(name) { return function(code) {
-            console.log('exit with code: ' + code + ' name: ' + name)
-            data = [name, (code == 0?'OK':'FAIL')]
+        cmd.on('exit', (function(name, host) { return function(code) {
+            data = [name, (code == 0?'OK':'FAIL'), host]
             io.emit('status-update', data)
-        } }(name)))
+        } }(name, host)))
     }
 }
 
 http.listen(3000, function(){
-  console.log('listening on *:3000');
+    console.log('listening on *:3000');
 });

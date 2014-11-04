@@ -9,32 +9,105 @@
         $(document).ready(function(){
         var socket = new io()
 
+        socket.emit('update', 'all')
+
         socket.on('status-update', function(data) {
-            var host = data[0]
+            var name = data[0]
             var value = data[1]
-            addHostStatus(host, value)
+            var host = data[2]
+            addHostStatus(host, name, value)
         })
 
-        $('#update').click(function() {
-            console.log('sent update emit')
+        $(document).keypress(function(evt) {
             socket.emit('update', 'all')
         })
 
-        function addHostStatus(name, value) {
-            console.log('adding ' + name + ':' + value + ' to table')
+        function addHostStatus(host, name, value) {
+            $('#last-update').html(new Date().toTimeString().split(' ')[0])
+        
             if ($('#' + name + '-value').length > 0) {
-                console.log('already an element')
-                $('#' + name + '-value').html(value)
+                $('#' + name + '-value').attr('class', 'status ' + value)
                 return
             }
-            $('#status-table').append('<tr><td>' + name +'</td><td id="' + name + '-value">' + value + '</td></tr>')
+            $('#status-table').append('<div class="row"><span class="status ' + value + '" id="' + name + '-value"></span><span class="status-label"><a href="http://' + host + '">' + name +'</a></span></div>')
         }
         })
     </script>
-  <body>
-    <table id='status-table'>
-    </table>
-    <button id='update'>update status</button>
+    <style type='text/css'>
+        body {
+            font-family: Helvetica;
+            background-color: #3D3D3D;
+        }
 
+        .row {
+            height: 26px;
+        }
+
+        #page-container {
+            width: 200px;
+            margin: auto;
+        }
+
+        #status-table {
+            background-color: #FFFFFF;
+            width: 200px;
+            position: absolute;
+            top: 32%;
+            margin: auto;
+            border: 1px solid #E9E9E9;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .status {
+            float: left;
+            display: inline-block;
+            width: 16px;
+            height: 16px; 
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            margin: 4px;
+        }
+
+        .status-label {
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .OK {
+            background-color: #6FF58A;
+            border: 1px solid #5ED175;
+        }
+
+        .FAIL {
+            background-color: #FF7575;
+            border: 1px solid #D66060;
+        }
+
+        #last-update {
+            color: #888888;
+            font-size: 0.7em;
+            width: 200px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        a {
+            color: #08c;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+    </style>
+  <body>
+    <div id='page-container'>
+        <div id='status-table'>
+        <div class='row'><span id='last-update'></span></div>
+        </div>
+    </div>
   </body>
 </html>
