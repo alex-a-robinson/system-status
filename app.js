@@ -2,26 +2,18 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var process = require('child_process')
+var config = require('./config.json')
 
-var servers = {
-    'andromeda' : 'andromeda.begly.co.uk',
-    'ganymede'  : 'ganymede.begly.co.uk',
-    'europa'    : 'europa.begly.co.uk',
-}
+var servers = config['servers']
 
 app.get('/', function(req, res) {
     if (req.subdomains[1] == 'status') {
         res.sendFile(__dirname + '/index.html')
     } else {
         res.status = 404;
-        res.end()
+        res.end('404 - content not found')
     }
 });
-
-app.get('/style.css', function(req, res) {
-    res.writeHead(200, {'Content-Type': 'text/css'})
-    res.sendFile(__dirname + '/style.css')
-})
 
 io.on('connection', function(socket){
     socket.on('update', function(msg){
@@ -42,6 +34,6 @@ function updateStatus(io) {
     }
 }
 
-http.listen(3000, function(){
-    console.log('listening on *:3000');
+http.listen(80, function(){
+    console.log('listening on *:80');
 });

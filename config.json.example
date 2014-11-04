@@ -1,0 +1,6 @@
+{
+    "servers" : {
+        "google" : "google.com",
+        "gmail"  : "mail.google.com"
+    }
+}

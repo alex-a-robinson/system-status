@@ -1,8 +1,9 @@
 {
   "name": "system-status-monitor",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "A page which shows the status (pings) of servers",
   "dependencies": {
     "express": "^4.10.1",
-    "socket.io": "^1.2.0"
+    "socket.io": "^1.2.0",
   }
 }
