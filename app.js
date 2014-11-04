@@ -7,7 +7,7 @@ var config = require('./config.json')
 var servers = config['servers']
 
 app.get('/', function(req, res) {
-    if (req.subdomains[1] == 'status') {
+    if (req.subdomains.pop() == 'status') { // run on status subdomain
         res.sendFile(__dirname + '/index.html')
     } else {
         res.status = 404;
