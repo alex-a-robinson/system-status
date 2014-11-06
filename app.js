@@ -34,6 +34,6 @@ function updateStatus(io) {
     }
 }
 
-http.listen(80, function(){
+http.listen(3000, function(){
     console.log('listening on *:80');
 });
